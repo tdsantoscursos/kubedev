@@ -19,6 +19,7 @@ services:
     #- mariadb_data:/mariadb
     - ~/MariaDb:/var/lib/mysql
    restart: always
+   
    environment:
    # ALLOW_EMPTY_PASSWORD is recommended only for development.
      MARIADB_ROOT_PASSWORD: mariapwd
