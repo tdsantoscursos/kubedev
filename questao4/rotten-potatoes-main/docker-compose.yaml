@@ -1,0 +1,41 @@
+version: '3.8'
+
+volumes:
+  mongo_vol:
+
+networks:
+  web_net:
+    driver: bridge
+
+services:
+  web:
+    image: rotten-potatoes
+    build:
+      dockerfile: ./Dockerfile
+      context: ./src
+    ports:
+      - 5000:5000
+    networks:
+      - web_net
+    depends_on:
+      - mongodb
+    environment:
+      MONGODB_URI: mongodb://mongouser:mongopwd:27017/admin
+
+  mongodb:
+    image: mongo:4.4.6
+    ports:
+      - 27017:27017
+    networks:
+      - web_net
+    volumes:
+      - mongo_vol:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo 127.0.0.1:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped      
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongouser
+      MONGO_INITDB_ROOT_PASSWORD: mongopwd
