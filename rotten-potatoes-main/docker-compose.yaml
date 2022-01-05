@@ -4,30 +4,32 @@ volumes:
   mongo_vol:
 
 networks:
-  web_net:
+  potatoes_net:
     driver: bridge
 
 services:
   web:
-    image: rotten-potatoes
-    build:
-      dockerfile: ./Dockerfile
-      context: ./src
+    image: bogusrj/rotten-potatoes:latest
     ports:
-      - 5000:5000
+      - "5000:5000"
     networks:
-      - web_net
+      - potatoes_net
     depends_on:
       - mongodb
     environment:
-      MONGODB_URI: mongodb://mongouser:mongopwd:27017/admin
+      #MONGODB_URI: mongodb://mongouser:mongopwd:27017/admin
+      MONGODB_DB: admin
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_USERNAME: mongouser
+      MONGODB_PASSWORD: mongopwd      
 
   mongodb:
     image: mongo:4.4.6
     ports:
       - 27017:27017
     networks:
-      - web_net
+      - potatoes_net
     volumes:
       - mongo_vol:/data/db
     healthcheck:
