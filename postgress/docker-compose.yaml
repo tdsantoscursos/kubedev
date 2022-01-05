@@ -1,0 +1,36 @@
+version: '3.8'
+volumes:
+  postgres_vol:
+networks:
+  postgres_net:
+    driver: bridge
+services:
+  PostgreSQL:
+   image: postgres:14.0
+   restart: always
+   container_name: postgresdb
+   ports:
+    - 5432:5432
+   networks:
+    - postgres_net
+   volumes:
+    - ~/postgresql:/var/lib/postgresql
+   restart: always
+   environment:
+    POSTGRES_PASSWORD: postgrespass
+    POSTGRES_USER: postgres
+    POSTGRES_DB: postgressdb
+  
+  pgadmin:
+   image: dpage/pgadmin4:6.0
+   environment:
+    PGADMIN_DEFAULT_EMAIL: teste@teste.com
+    PGADMIN_DEFAULT_PASSWORD: SuperSecret
+   ports:
+    - 8884:80
+   networks:
+    - postgres_net
+   depends_on:
+    - PostgreSQL
+   restart: always
+  
